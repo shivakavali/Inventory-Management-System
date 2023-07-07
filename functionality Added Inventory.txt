@@ -1,0 +1,68 @@
+# Read products from the inventory file
+fd = open("Inventory.txt", 'r')
+products = fd.read().split("\n")
+fd.close()
+
+# Get user input for product ID and quantity
+ui_prod_id = input("Enter product ID: ")
+ui_prod_qun = input("Enter quantity: ")
+
+updated_product_lst = []
+
+for product in products:
+    prod_details = product.split(",")
+    if prod_details[0] == ui_prod_id:
+        #checking whether the enough product is exist or not
+        if(int(ui_prod_qun)<=int(prod_details[3])):
+            
+            print("--------------------------------")
+            print("Product Name   :", prod_details[1])
+            print("Price          :", prod_details[2])
+            print("Quantity       :", ui_prod_qun)
+            print("--------------------------------")
+            billing_amount = int(ui_prod_qun) * int(prod_details[2])
+            print("Billing Amount : ", billing_amount)
+            print("--------------------------------")
+            prod_details[3] = str(int(prod_details[3]) - int(ui_prod_qun))
+        #recommending if enough quantity not availble then to purchase available quantity      
+        else:
+            print("Sorry, We're not having enough quantity.")
+            print("We're having only",prod_details[3],"quantity.")
+            print("Would you like to purchase it?")
+            
+            #Asking user would like to purchase or not
+            ch = input("Press Y/N")
+            
+            if (ch == 'Y' or ch == 'y'):
+                print("--------------------------------")
+                print("Product Name   :", prod_details[1])
+                print("Price          :", prod_details[2])
+                print("Quantity       :", prod_details[3])
+                print("--------------------------------")
+                billing_amount = int(ui_prod_qun) * int(prod_details[2])
+                print("Billing Amount : ", billing_amount)
+                print("--------------------------------")
+                
+                prod_details[3] = '0'
+                
+            else:
+                print("Thanks")
+    # Updating my inventory list
+    updated_product_lst.append(prod_details)
+
+
+lst = []
+#Updating inventory details
+for i in updated_product_lst:
+    prod = ",".join(i) + '\n'
+    lst.append(prod)
+
+lst[-1] = lst[-1][:-1]
+# Update the inventory file
+fd = open('Inventory.txt', 'w')
+
+for i in lst:
+    fd.write(i)
+
+fd.close()
+print("Inventory updated")
